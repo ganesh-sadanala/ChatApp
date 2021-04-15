@@ -33,18 +33,27 @@
           placeholder="Enter the Name"
         />
         <br />
-        <button class="btn btn-success">Send</button>
+        <button id="send" class="btn btn-success">Send</button>
       </div>
       <div id="messages"></div>
     </div>
     <script>
       $(() => {
-        addMessages({ name: "Node.js", message: "Hello! React.js" });
+        $("#send").click(() => {
+          addMessages({ name: "Node.js", message: "Hello! React.js" });
+        });
+        getMessages();
       });
       function addMessages(message) {
         $("#messages").append(
           `<h4>${message.name}</h4> <p>${message.message}</p>`
         );
+      }
+
+      function getMessages() {
+        $.get("http://localhost:3000/messages", (data) => {
+          data.forEach(addMessages);
+        });
       }
     </script>
   </body>
