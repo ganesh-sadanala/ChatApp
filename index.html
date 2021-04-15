@@ -30,8 +30,15 @@
           id="name"
           type="text"
           class="form-control"
-          placeholder="Enter the Name"
+          placeholder="Enter your Name"
         />
+        <label for="message">Message</label>
+        <textarea
+          id="message"
+          type="text"
+          class="form-control"
+          placeholder="Enter the message"
+        ></textarea>
         <br />
         <button id="send" class="btn btn-success">Send</button>
       </div>
@@ -40,10 +47,15 @@
     <script>
       $(() => {
         $("#send").click(() => {
-          addMessages({ name: "Node.js", message: "Hello! React.js" });
+          var message = {
+            name: $("#name").val(),
+            message: $("#message").val(),
+          };
+          postMessage(message);
         });
         getMessages();
       });
+
       function addMessages(message) {
         $("#messages").append(
           `<h4>${message.name}</h4> <p>${message.message}</p>`
@@ -54,6 +66,10 @@
         $.get("http://localhost:3000/messages", (data) => {
           data.forEach(addMessages);
         });
+      }
+
+      function postMessage(message) {
+        $.post("http://localhost:3000/messages", message);
       }
     </script>
   </body>
