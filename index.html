@@ -10,6 +10,7 @@
       integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
       crossorigin="anonymous"
     ></script>
+    <script src="./node_modules/socket.io/client-dist/socket.io.js"></script>
     <!-- Latest compiled and minified CSS -->
     <link
       rel="stylesheet"
@@ -45,6 +46,7 @@
       <div id="messages"></div>
     </div>
     <script>
+      var socket = io();
       $(() => {
         $("#send").click(() => {
           var message = {
