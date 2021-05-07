@@ -6,26 +6,36 @@ var io = require("socket.io")(http);
 app.use(express.static(__dirname));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-var messages = [];
 var mongoose = require("mongoose");
 
-var dbUrl = `mongodb+srv://${process.env.username}:${process.env.password}@cluster0.mdhsd.mongodb.net/chat_db?retryWrites=true&w=majority`;
-console.log(dbUrl);
-app.get("/messages", (req, res) => {
-  res.send(messages);
+var dbUrl = `mongodb+srv://${process.env.username}:${process.env.password}@sandbox.qdcp6.mongodb.net/chat_db?retryWrites=true&w=majority`;
+var Message = mongoose.model("Message", {
+  name: String,
+  message: String,
 });
 
-https: app.post("/messages", (req, res) => {
-  messages.push(req.body);
-  io.emit("message", req.body);
-  res.sendStatus(200);
+app.get("/messages", (req, res) => {
+  Message.find({}, (err, messages) => {
+    res.send(messages);
+  });
+});
+
+app.post("/messages", (req, res) => {
+  var message = new Message(req.body);
+  message.save((err) => {
+    if (err) {
+      sendStatus(500);
+    }
+    io.emit("message", req.body);
+    res.sendStatus(200);
+  });
 });
 
 io.on("connection", (socket) => {
   console.log("user is connected");
 });
 
-mongoose.connect(dbUrl, (err) => {
+mongoose.connect(dbUrl, { useNewUrlParser: true }, (err) => {
   console.error(err);
 });
 var server = http.listen(3000, () => {
