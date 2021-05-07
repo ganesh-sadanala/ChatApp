@@ -16,6 +16,7 @@
     "socket.io": "^4.0.1"
   },
   "devDependencies": {
-    "jasmine": "^3.7.0"
+    "jasmine": "^3.7.0",
+    "request": "^2.88.2"
   }
 }
