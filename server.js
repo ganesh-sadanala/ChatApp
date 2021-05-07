@@ -21,19 +21,25 @@ app.get("/messages", (req, res) => {
 });
 
 app.post("/messages", async (req, res) => {
-  var message = new Message(req.body);
-  var savedMessage = await message.save();
+  try {
+    var message = new Message(req.body);
+    var savedMessage = await message.save();
 
-  console.log("message saved");
+    console.log("message saved");
 
-  var censored = Message.findOne({ message: "badword" });
+    var censored = await Message.findOne({ message: "badword" });
 
-  if (censored) {
-    console.log("censored words found", censored);
-    await Message.remove({ _id: censored.id });
-  } else io.emit("message", req.body);
+    if (censored) {
+      console.log("censored words found", censored);
+      await Message.remove({ _id: censored.id });
+    } else io.emit("message", req.body);
 
-  res.sendStatus(200);
+    res.sendStatus(200);
+  } catch (err) {
+    res.sendStatus(500);
+    console.error(err);
+  } finally {
+  }
 });
 
 io.on("connection", (socket) => {
